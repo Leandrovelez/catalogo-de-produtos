@@ -5,7 +5,12 @@
     <div class="card-body">
         <?php 
             $id = $produto['id'] ?? null;
-            $destino = $id ? "admin.php?p=produtos/atualizar&id={$id}" : "admin.php?p=produtos/salvar"; 
+            $destino = $id ? "admin.php?p=produtos/atualizar&id={$id}" : "admin.php?p=produtos/salvar";
+            // Em edição, imagens ficam na pasta da referência já salva no banco ($referenciaAntiga em atualizar.php),
+            // não no valor digitado no campo (ex.: referência duplicada inválida antes de salvar).
+            $refPastaImagens = (isset($referenciaAntiga) && $referenciaAntiga !== '')
+                ? $referenciaAntiga
+                : ($produto['referencia'] ?? '');
         ?>
         
         <form id="productForm" action="<?= $destino ?>" method="POST" enctype="multipart/form-data">
@@ -46,11 +51,11 @@
                             <div class="d-flex flex-wrap gap-2 mb-3">
                                 <?php foreach ($imagens as $img): ?>
                                     <div class="position-relative border p-1 bg-white shadow-sm text-center">
-                                        <img src="uploads/<?= $produto['referencia'] ?>/<?= $img['caminho'] ?>" 
+                                        <img src="uploads/<?= htmlspecialchars($refPastaImagens) ?>/<?= htmlspecialchars($img['caminho']) ?>" 
                                              width="80" height="80" style="object-fit: cover;" class="d-block">
                                         
                                         <div class="mt-1 d-flex justify-content-center gap-2">
-                                            <a href="uploads/<?= $produto['referencia'] ?>/<?= $img['caminho'] ?>" 
+                                            <a href="uploads/<?= htmlspecialchars($refPastaImagens) ?>/<?= htmlspecialchars($img['caminho']) ?>" 
                                                target="_blank" class="btn btn-sm btn-warning text-white py-0 px-1">
                                             <i data-feather="eye"></i>
                                             </a>
