@@ -1,46 +1,104 @@
 <div class="card shadow-sm">
-    <div class="card-header bg-primary text-white">
-        <h4 class="mb-0"><?= isset($produto) ? 'Editar Produto' : 'Novo Produto' ?></h4>
+    <div class="card-header bg-dark text-white">
+        <h4><?= isset($produto['id']) ? 'Editar Produto' : 'Novo Produto' ?></h4>
     </div>
     <div class="card-body">
-        <form action="admin.php?p=produtos/salvar<?= isset($produto) ? '&id=' . $produto['id'] : '' ?>" 
-              method="POST" 
-              enctype="multipart/form-data">
+        <?php 
+            $id = $produto['id'] ?? null;
+            $destino = $id ? "admin.php?p=produtos/atualizar&id={$id}" : "admin.php?p=produtos/salvar"; 
+        ?>
+        
+        <form action="<?= $destino ?>" method="POST" enctype="multipart/form-data">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-8">
                     <div class="mb-3">
-                        <label for="nome" class="form-label">Nome do Produto</label>
-                        <input type="text" name="nome" id="nome" class="form-control" 
-                               value="<?= $produto['nome'] ?? '' ?>" required>
+                        <label class="form-label">Nome do Produto</label>
+                        <input type="text" name="nome" class="form-control" 
+                               value="<?= htmlspecialchars($produto['nome'] ?? '') ?>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Referência (Única)</label>
+                        <input type="text" name="referencia" class="form-control" 
+                            value="<?= htmlspecialchars($produto['referencia'] ?? '') ?>" required>
+                        <small class="text-muted">Atenção: Mudar a referência renomeará a pasta de arquivos no servidor.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Descrição</label>
+                        <textarea name="descricao" class="form-control" rows="5"><?= htmlspecialchars($produto['descricao'] ?? '') ?></textarea>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="referencia" class="form-label">Referência</label>
-                        <input type="text" name="referencia" id="referencia" class="form-control" 
-                            value="<?= $produto['referencia'] ?? '' ?>" required>
+
+                <div class="col-md-4">
+                    <h5>Imagens (Máx. 5)</h5>
+                    <div id="container-imagens" class="border p-3 bg-light rounded">
+                        
+                        <?php if (isset($imagens) && count($imagens) > 0): ?>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <?php foreach ($imagens as $img): ?>
+                                    <div class="position-relative border p-1 bg-white shadow-sm text-center">
+                                        <img src="uploads/<?= $produto['referencia'] ?>/<?= $img['caminho'] ?>" 
+                                             width="80" height="80" style="object-fit: cover;" class="d-block">
+                                        
+                                        <div class="mt-1 d-flex justify-content-center gap-2">
+                                            <a href="uploads/<?= $produto['referencia'] ?>/<?= $img['caminho'] ?>" 
+                                               target="_blank" class="btn btn-sm btn-warning text-white py-0 px-1">
+                                            <i data-feather="eye"></i>
+                                            </a>
+                                            
+                                            <a href="admin.php?p=produtos/atualizar&id=<?= $id ?>&delete_img=<?= $img['id'] ?>" 
+                                               class="btn btn-sm btn-danger text-white py-0 px-1" 
+                                               onclick="return confirm('Deletar esta imagem?')">
+                                               <i data-feather="trash"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php 
+                        $totalAtual = isset($imagens) ? count($imagens) : 0;
+                        $restante = 5 - $totalAtual;
+                        ?>
+
+                        <?php if ($restante > 0): ?>
+                            <div class="alert alert-info py-2 small">
+                                Você pode adicionar mais <strong><?= $restante ?></strong> imagem(ns).
+                            </div>
+                            <input type="file" name="imagens[]" class="form-control" multiple 
+                                   <?= !$id ? 'required' : '' ?> id="input-imagens">
+                        <?php else: ?>
+                            <div class="alert alert-warning py-2 small m-0 text-center">
+                                <strong>Limite de 5 imagens atingido.</strong><br>Exclua uma para subir outra.
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
-            </div>
-            <div class="mb-3">
-                <label for="descricao" class="form-label">Descrição</label>
-                <textarea name="descricao" id="descricao" class="form-control" rows="3"><?= $produto['descricao'] ?? '' ?></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="imagem" class="form-label">Imagem do Produto</label>
-                <input type="file" name="imagem" id="imagem" class="form-control" <?= isset($produto) ? '' : 'required' ?>>
-                <?php if (isset($produto) && $produto['imagem']): ?>
-                    <div class="mt-2">
-                        <small class="text-muted">Imagem atual:</small><br>
-                        <img src="uploads/<?= $produto['imagem'] ?>" width="100" class="img-thumbnail">
-                    </div>
-                <?php endif; ?>
             </div>
 
+            <hr>
             <div class="d-flex justify-content-end gap-2">
                 <a href="admin.php?p=produtos/index" class="btn btn-secondary">Cancelar</a>
-                <button type="submit" class="btn btn-primary">Salvar Produto</button>
+                <button type="submit" class="btn btn-success">
+                    <?= $id ? 'Salvar Alterações' : 'Cadastrar Produto' ?>
+                </button>
             </div>
         </form>
     </div>
 </div>
+
+<script>
+// Validação básica no front para não deixar selecionar mais que o permitido
+const inputImagens = document.getElementById('input-imagens');
+if(inputImagens) {
+    inputImagens.addEventListener('change', function() {
+        const limite = <?= $restante ?>;
+        if (this.files.length > limite) {
+            alert(`Atenção! Você só pode escolher mais ${limite} imagem(ns).`);
+            this.value = "";
+        }
+    });
+}
+</script>

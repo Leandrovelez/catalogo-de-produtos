@@ -1,13 +1,14 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h3>Gerenciamento de Produtos</h3>
-    <a href="admin.php?p=produtos/salvar" class="btn btn-success">+ Novo Produto</a>
+    <a href="admin.php?p=produtos/salvar" class="btn btn-success d-flex align-items-center gap-2">
+        <i data-feather="plus-circle"></i> Novo Produto
+    </a>
 </div>
 
 <table class="table table-hover bg-white shadow-sm rounded">
     <thead class="table-dark">
         <tr>
             <th>ID</th>
-            <th>Imagem</th>
             <th>Nome</th>
             <th>Referência</th>
             <th class="text-center">Ações</th>
@@ -17,11 +18,12 @@
         <?php foreach($produtos as $p): ?>
         <tr>
             <td><?= $p['id'] ?></td>
-            <td><img src="uploads/<?= $p['imagem'] ?>" width="50" class="rounded"></td>
             <td><?= htmlspecialchars($p['nome']) ?></td>
             <td><?= htmlspecialchars($p['referencia']) ?></td>
             <td class="text-center">
-                <a href="admin.php?p=produtos/salvar&id=<?= $p['id'] ?>" class="btn btn-sm btn-info text-white">Editar</a>
+                <a href="admin.php?p=produtos/atualizar&id=<?= $p['id'] ?>" class="btn btn-sm btn-info text-white">
+                    <i data-feather="edit"></i>
+                </a>
                 
                 <button type="button" 
                         class="btn btn-sm btn-danger btn-excluir" 
@@ -30,7 +32,7 @@
                         data-id="<?= $p['id'] ?>"
                         data-nome="<?= htmlspecialchars($p['nome']) ?>"
                         data-ref="<?= htmlspecialchars($p['referencia']) ?>">
-                    Excluir
+                    <i data-feather="trash"></i>
                 </button>
             </td>
         </tr>

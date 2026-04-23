@@ -38,3 +38,18 @@ if (session_status() === PHP_SESSION_NONE) session_start();
   </div>
 </nav>
 <div class="container">
+
+<style>
+    .btn i.feather, 
+    .btn svg.feather {
+        width: 16px;
+        height: 16px;
+        vertical-align: middle;
+    }
+    
+    .btn-sm i.feather,
+    .btn-xs i.feather {
+        width: 14px;
+        height: 14px;
+    }
+</style>

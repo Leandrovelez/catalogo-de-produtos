@@ -15,6 +15,11 @@
     }
 </script>
 
+<script src="https://unpkg.com/feather-icons"></script>
+<script>
+  feather.replace();
+</script>
+
 <?php
 // Lógica para disparar o Toastr baseado na sessão
 if (isset($_SESSION['mensagem'])): ?>
