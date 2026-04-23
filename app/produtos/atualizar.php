@@ -24,7 +24,49 @@ if (isset($_GET['delete_img'])) {
 
 // Ação de salvar formulário
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $novaReferencia = $_POST['referencia'];
+    $id = (int) $produto['id'];
+    $erros = [];
+    if ((int) ($_POST['id'] ?? 0) !== $id) {
+        $erros[] = 'Confirmação do produto falhou. Recarregue a página e tente novamente.';
+    }
+
+    $nome = trim($_POST['nome'] ?? '');
+    $ref  = trim($_POST['referencia'] ?? '');
+    $desc = $_POST['descricao'] ?? '';
+
+    if ($nome === '' || strlen($nome) < 3 || strlen($nome) > 255) {
+        $erros[] = 'Nome inválido (obrigatório, entre 3 e 255 caracteres).';
+    }
+
+    if ($ref === '' || strlen($ref) < 2 || strlen($ref) > 100 || !preg_match('/^[a-zA-Z0-9_-]+$/', $ref)) {
+        $erros[] = 'Referência inválida (2 a 100 caracteres; apenas letras, números, hífen ou underline).';
+    }
+
+    if (strlen($desc) > 2000) {
+        $erros[] = 'Descrição muito longa (máximo 2000 caracteres).';
+    }
+
+    if ($id > 0 && $ref !== '' && $model->referenciaExiste($ref, $id)) {
+        $erros[] = 'Esta referência já pertence a outro produto.';
+    }
+
+    if (!empty($erros)) {
+        $_SESSION['mensagem'] = implode(' ', $erros);
+        $_SESSION['tipo_mensagem'] = 'danger';
+        $produto = array_merge($produto, [
+            'nome' => $_POST['nome'] ?? $produto['nome'],
+            'referencia' => $_POST['referencia'] ?? $produto['referencia'],
+            'descricao' => $_POST['descricao'] ?? $produto['descricao'],
+        ]);
+        $imagens = $model->getImages($id);
+
+        include 'views/components/header.php';
+        include 'views/produtos/form.view.php';
+        include 'views/components/footer.php';
+        exit;
+    }
+
+    $novaReferencia = trim($_POST['referencia']);
 
     // 1. Lógica de Renomear Pasta Física
     if ($novaReferencia !== $referenciaAntiga) {
@@ -32,12 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $newPath = "uploads/{$novaReferencia}";
 
         if (is_dir($oldPath)) {
-            // Renomeia a pasta no Windows/Linux
             if (!rename($oldPath, $newPath)) {
                 die("Erro ao renomear pasta de imagens. Verifique as permissões.");
             }
         } else {
-            // Se a pasta antiga não existia por algum motivo, cria a nova
             if (!is_dir($newPath)) {
                 mkdir($newPath, 0777, true);
             }

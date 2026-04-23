@@ -21,15 +21,22 @@
 </script>
 
 <?php
-// Lógica para disparar o Toastr baseado na sessão
-if (isset($_SESSION['mensagem'])): ?>
+if (isset($_SESSION['mensagem'])):
+    $tipoToast = $_SESSION['tipo_mensagem'] ?? 'info';
+    $mapTipo = ['danger' => 'error', 'primary' => 'info', 'secondary' => 'info'];
+    if (isset($mapTipo[$tipoToast])) {
+        $tipoToast = $mapTipo[$tipoToast];
+    }
+    if (!in_array($tipoToast, ['success', 'error', 'info', 'warning'], true)) {
+        $tipoToast = 'info';
+    }
+    $msgJson = json_encode((string) $_SESSION['mensagem'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
+    ?>
     <script>
-        toastr["<?= $_SESSION['tipo_mensagem'] ?>"]("<?= $_SESSION['mensagem'] ?>");
+        toastr[<?= json_encode($tipoToast) ?>](<?= $msgJson ?>);
     </script>
-    <?php 
-    // Limpa a mensagem para não exibir de novo no refresh
-    unset($_SESSION['mensagem']); 
-    unset($_SESSION['tipo_mensagem']); 
+    <?php
+    unset($_SESSION['mensagem'], $_SESSION['tipo_mensagem']);
 endif; ?>
 </body>
 </html>

@@ -94,4 +94,19 @@ class Produto {
         $stmt = $this->pdo->prepare("DELETE FROM produtos WHERE id = ?");
         return $stmt->execute([$id]);
     }
+
+    public function referenciaExiste($referencia, $idExcluido = null) {
+        $sql = "SELECT id FROM produtos WHERE referencia = ?";
+        $params = [$referencia];
+    
+        // Se estivermos editando, ignoramos o próprio ID do produto atual
+        if ($idExcluido) {
+            $sql .= " AND id != ?";
+            $params[] = $idExcluido;
+        }
+    
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetch() !== false;
+    }
 }

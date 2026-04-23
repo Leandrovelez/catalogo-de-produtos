@@ -8,25 +8,33 @@
             $destino = $id ? "admin.php?p=produtos/atualizar&id={$id}" : "admin.php?p=produtos/salvar"; 
         ?>
         
-        <form action="<?= $destino ?>" method="POST" enctype="multipart/form-data">
+        <form id="productForm" action="<?= $destino ?>" method="POST" enctype="multipart/form-data">
+            <?php if ($id): ?>
+                <input type="hidden" name="id" value="<?= (int) $id ?>">
+            <?php endif; ?>
             <div class="row">
                 <div class="col-md-8">
                     <div class="mb-3">
                         <label class="form-label">Nome do Produto</label>
                         <input type="text" name="nome" class="form-control" 
-                               value="<?= htmlspecialchars($produto['nome'] ?? '') ?>" required>
+                            value="<?= htmlspecialchars($produto['nome'] ?? $_POST['nome'] ?? '') ?>">
+                        <div class="input-error-line" aria-hidden="true"></div>
+                        <div class="error-message text-danger small mt-1" id="error-nome"></div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Referência (Única)</label>
+                        <label class="form-label">Referência</label>
                         <input type="text" name="referencia" class="form-control" 
-                            value="<?= htmlspecialchars($produto['referencia'] ?? '') ?>" required>
-                        <small class="text-muted">Atenção: Mudar a referência renomeará a pasta de arquivos no servidor.</small>
+                            value="<?= htmlspecialchars($produto['referencia'] ?? $_POST['referencia'] ?? '') ?>">
+                        <div class="input-error-line" aria-hidden="true"></div>
+                        <div class="error-message text-danger small mt-1" id="error-referencia"></div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Descrição</label>
-                        <textarea name="descricao" class="form-control" rows="5"><?= htmlspecialchars($produto['descricao'] ?? '') ?></textarea>
+                        <textarea name="descricao" class="form-control" rows="5"><?= htmlspecialchars($produto['descricao'] ?? $_POST['descricao'] ?? '') ?></textarea>
+                        <div class="input-error-line" aria-hidden="true"></div>
+                        <div class="error-message text-danger small mt-1" id="error-descricao"></div>
                     </div>
                 </div>
 
@@ -89,15 +97,68 @@
     </div>
 </div>
 
+<style>
+    #productForm .input-error-line {
+        height: 2px;
+        margin-top: 2px;
+        border-radius: 1px;
+        background: transparent;
+        transition: background 0.15s ease;
+    }
+    #productForm .is-invalid + .input-error-line,
+    #productForm textarea.is-invalid + .input-error-line {
+        background: #dc3545;
+    }
+</style>
 <script>
 // Validação básica no front para não deixar selecionar mais que o permitido
 const inputImagens = document.getElementById('input-imagens');
 if(inputImagens) {
     inputImagens.addEventListener('change', function() {
-        const limite = <?= $restante ?>;
+        const limite = <?= (int) $restante ?>;
         if (this.files.length > limite) {
             alert(`Atenção! Você só pode escolher mais ${limite} imagem(ns).`);
             this.value = "";
+        }
+    });
+}
+
+const productForm = document.getElementById('productForm');
+if (productForm) {
+    productForm.addEventListener('submit', function(e) {
+        this.querySelectorAll('.error-message').forEach(function(el) { el.textContent = ''; });
+        this.querySelectorAll('.form-control').forEach(function(el) { el.classList.remove('is-invalid'); });
+
+        let temErro = false;
+
+        const nome = this.querySelector('input[name="nome"]');
+        const ref = this.querySelector('input[name="referencia"]');
+        const desc = this.querySelector('textarea[name="descricao"]');
+
+        const setErro = function(el, msg) {
+            if (!el) return;
+            el.classList.add('is-invalid');
+            const box = document.getElementById('error-' + el.name);
+            if (box) box.textContent = msg;
+            temErro = true;
+        };
+
+        const nomeVal = nome.value.trim();
+        if (nomeVal.length < 3) setErro(nome, "O nome deve ter pelo menos 3 caracteres.");
+        else if (nomeVal.length > 255) setErro(nome, "O nome não pode exceder 255 caracteres.");
+
+        const refVal = ref.value.trim();
+        const refRegex = /^[a-zA-Z0-9-_]+$/;
+        if (refVal.length < 2) setErro(ref, "A referência deve ter pelo menos 2 caracteres.");
+        else if (refVal.length > 100) setErro(ref, "A referência não pode exceder 100 caracteres.");
+        else if (!refRegex.test(refVal)) setErro(ref, "Use apenas letras, números, hífens ou underlines.");
+
+        if (desc.value.length > 2000) setErro(desc, "A descrição é muito longa (máximo 2000 caracteres).");
+
+        if (temErro) {
+            e.preventDefault();
+            const primeiroErro = this.querySelector('.is-invalid');
+            if (primeiroErro) primeiroErro.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     });
 }
