@@ -1,4 +1,4 @@
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4 mt-4">
     <h3>Gerenciamento de Produtos</h3>
     <a href="admin.php?p=produtos/salvar" class="btn btn-success d-flex align-items-center gap-2">
         <i data-feather="plus-circle"></i> Novo Produto

@@ -1,7 +1,10 @@
 </div> 
-<footer class="text-center mt-5 py-3 bg-light">
-    <p>&copy; 2026 - Teste Técnico PHP</p>
-</footer>
+<footer class="footer mt-auto py-3 bg-dark text-white">
+        <div class="container text-center">
+            <span>© 2026 Leandro Velez - Todos os direitos reservados.</span>
+        </div>
+    </footer>
+</body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
@@ -38,5 +41,4 @@ if (isset($_SESSION['mensagem'])):
     <?php
     unset($_SESSION['mensagem'], $_SESSION['tipo_mensagem']);
 endif; ?>
-</body>
 </html>

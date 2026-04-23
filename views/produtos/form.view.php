@@ -1,4 +1,4 @@
-<div class="card shadow-sm">
+<div class="card shadow-sm mt-4">
     <div class="card-header bg-dark text-white">
         <h4><?= isset($produto['id']) ? 'Editar Produto' : 'Novo Produto' ?></h4>
     </div>
