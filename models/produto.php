@@ -8,12 +8,21 @@ class Produto {
         $this->pdo = $pdo;
     }
 
-    public function index() {
-        // O alias agora é 'caminho' para bater com a sua coluna
-        $sql = "SELECT p.*, (SELECT caminho FROM imagens WHERE produto_id = p.id LIMIT 1) as caminho 
-                FROM produtos p 
+    public function index($busca = '') {
+        $busca = trim((string) $busca);
+        $sqlBase = "SELECT p.*, (SELECT caminho FROM imagens WHERE produto_id = p.id LIMIT 1) AS caminho 
+                FROM produtos p ";
+
+        if ($busca === '') {
+            $sql = $sqlBase . "ORDER BY p.id DESC";
+            return $this->pdo->query($sql)->fetchAll();
+        }
+
+        $like = '%' . addcslashes($busca, '%_\\') . '%';
+        $sql = $sqlBase . "WHERE p.nome LIKE ? OR p.referencia LIKE ? OR COALESCE(p.descricao, '') LIKE ? 
                 ORDER BY p.id DESC";
-        $stmt = $this->pdo->query($sql);
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$like, $like, $like]);
         return $stmt->fetchAll();
     }
 

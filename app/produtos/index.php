@@ -1,7 +1,10 @@
 <?php
 require_once 'models/Produto.php';
 $model = new Produto($pdo);
-$produtos = $model->index();
+
+$ehPainelAdmin = strpos($_SERVER['PHP_SELF'], 'admin.php') !== false;
+$busca = $ehPainelAdmin ? '' : trim($_GET['q'] ?? '');
+$produtos = $model->index($busca);
 
 include 'views/components/header.php';
 
