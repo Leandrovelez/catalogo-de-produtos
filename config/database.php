@@ -2,7 +2,7 @@
 $host = 'localhost';
 $db   = 'catalogo_produtos';
 $user = 'root';
-$pass = '@root11';
+$pass = '';
 $port = 3306;
 
 try {
