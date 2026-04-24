@@ -5,15 +5,22 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Catálogo de produtos</title>
+    <link rel="icon" href="assets/logo.png" type="image/png">
+    <link rel="apple-touch-icon" href="assets/logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
+     
 </head>
 <body class="d-flex flex-column h-100">
 <?php $ehPainelAdmin = strpos($_SERVER['PHP_SELF'], 'admin.php') !== false; ?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container">
-    <a class="navbar-brand" href="index.php">Catálogo</a>
+    <a class="navbar-brand" href="index.php">
+        <img src="assets/logo.png" width="100">
+    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Abrir menu">
         <span class="navbar-toggler-icon"></span>
     </button>
