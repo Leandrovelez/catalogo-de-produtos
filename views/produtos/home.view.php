@@ -27,26 +27,29 @@
 
 <?php if (isset($busca) && $busca !== ''): ?>
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
-    <p class="text-muted small mb-0">Resultados para «<?= htmlspecialchars($busca) ?>» — <?= count($produtos) ?> produto(s).</p>
+    <p class="text-muted small mb-0">Resultados para "<?= htmlspecialchars($busca) ?>" — <?= count($produtos) ?> produto(s).</p>
     <a href="index.php" class="btn btn-sm btn-outline-secondary">Ver todos</a>
 </div>
 <?php endif; ?>
 
 <div class="row">
     <?php if (count($produtos) === 0): ?>
-    <div class="col-12">
-        <div class="alert alert-secondary mb-0">
+    <div class="col-12 text-center py-4">
+        <img src="assets/no_results.jpg"
+             alt="Ilustração: nenhum resultado"
+             class="d-block mx-auto home-no-results-img">
+        <p class="fw-bold mt-3 mb-0">
             <?= (isset($busca) && $busca !== '') ? 'Nenhum produto encontrado para esta busca.' : 'Nenhum produto cadastrado.' ?>
-        </div>
+        </p>
     </div>
     <?php else: ?>
     <?php foreach ($produtos as $p): ?>
-    <div class="col-md-3 mb-4">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 mb-4">
         <div class="card h-100">
             <img src="uploads/<?= $p['referencia'] ?>/<?= $p['caminho'] ?>" 
-                             class="card-img-top" 
-                             style="height: 250px; object-fit: cover;" 
-                             alt="<?= htmlspecialchars($p['nome']) ?>">
+                class="card-img-top" 
+                style="height: 250px; object-fit: cover;" 
+                alt="<?= htmlspecialchars($p['nome']) ?>">
             <div class="card-body">
                 <h5><?= htmlspecialchars($p['nome']) ?></h5>
                 <a href="index.php?p=detalhes&id=<?= $p['id'] ?>" class="btn btn-primary w-100">Ver Detalhes</a>
