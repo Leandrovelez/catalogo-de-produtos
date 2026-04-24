@@ -11,7 +11,7 @@
              alt="Ilustração: nenhum resultado"
              class="d-block mx-auto home-no-results-img">
         <p class="fw-bold mt-3 mb-0">
-            <?= (isset($busca) && $busca !== '') ? 'Nenhum produto encontrado para esta busca.' : 'Nenhum produto cadastrado.' ?>
+            Nenhum produto cadastrado
         </p>
     </div>
 <?php else: ?>
