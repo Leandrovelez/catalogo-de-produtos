@@ -60,11 +60,17 @@
                                             <i data-feather="eye"></i>
                                             </a>
                                             
-                                            <a href="admin.php?p=produtos/atualizar&id=<?= $id ?>&delete_img=<?= $img['id'] ?>" 
-                                               class="btn btn-sm btn-danger text-white py-0 px-1" 
-                                               onclick="return confirm('Deletar esta imagem?')">
-                                               <i data-feather="trash"></i>
-                                            </a>
+                                            <?php
+                                                $urlPreviewImg = "uploads/{$refPastaImagens}/{$img['caminho']}";
+                                                $urlExcluirImg = 'admin.php?p=produtos/atualizar&id=' . (int) $id . '&delete_img=' . (int) $img['id'];
+                                            ?>
+                                            <button type="button"
+                                                class="btn btn-sm btn-danger text-white py-0 px-1 js-excluir-imagem"
+                                                data-url="<?= htmlspecialchars($urlExcluirImg) ?>"
+                                                data-preview="<?= htmlspecialchars($urlPreviewImg) ?>"
+                                                title="Excluir imagem">
+                                                <i data-feather="trash"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
@@ -99,6 +105,25 @@
                 </button>
             </div>
         </form>
+    </div>
+</div>
+
+<div class="modal fade" id="modalExcluirImagem" tabindex="-1" aria-labelledby="modalExcluirImagemLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="modalExcluirImagemLabel">Confirmar exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p class="mb-3">Deseja realmente excluir esta imagem? Esta ação não pode ser desfeita.</p>
+                <img id="modalExcluirImagemPreview" src="" alt="Prévia da imagem a excluir" class="img-fluid rounded border bg-light" style="max-height: 280px; object-fit: contain;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <a id="modalExcluirImagemConfirmar" class="btn btn-danger" href="#">Excluir</a>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -167,4 +192,21 @@ if (productForm) {
         }
     });
 }
+
+document.addEventListener('click', function (e) {
+    const btn = e.target.closest('.js-excluir-imagem');
+    if (!btn) return;
+    e.preventDefault();
+    const url = btn.getAttribute('data-url');
+    const preview = btn.getAttribute('data-preview');
+    const modalEl = document.getElementById('modalExcluirImagem');
+    const imgEl = document.getElementById('modalExcluirImagemPreview');
+    const confirmar = document.getElementById('modalExcluirImagemConfirmar');
+    if (!modalEl || !imgEl || !confirmar || !url) return;
+    imgEl.src = preview || '';
+    confirmar.setAttribute('href', url);
+    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+        bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    }
+});
 </script>
