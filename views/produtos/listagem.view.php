@@ -5,40 +5,51 @@
     </a>
 </div>
 
-<table class="table table-hover bg-white shadow-sm rounded">
-    <thead class="table-dark">
-        <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Referência</th>
-            <th class="text-center">Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach($produtos as $p): ?>
-        <tr>
-            <td><?= $p['id'] ?></td>
-            <td><?= htmlspecialchars($p['nome']) ?></td>
-            <td><?= htmlspecialchars($p['referencia']) ?></td>
-            <td class="text-center">
-                <a href="admin.php?p=produtos/atualizar&id=<?= $p['id'] ?>" class="btn btn-sm btn-info text-white">
-                    <i data-feather="edit"></i>
-                </a>
-                
-                <button type="button" 
-                        class="btn btn-sm btn-danger btn-excluir" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#modalExcluir"
-                        data-id="<?= $p['id'] ?>"
-                        data-nome="<?= htmlspecialchars($p['nome']) ?>"
-                        data-ref="<?= htmlspecialchars($p['referencia']) ?>">
-                    <i data-feather="trash"></i>
-                </button>
-            </td>
-        </tr>
-        <?php endforeach; ?>
-    </tbody>
-</table>
+<?php if (count($produtos) === 0): ?>
+    <div class="col-12 text-center py-4">
+        <img src="assets/no_results.jpg"
+             alt="Ilustração: nenhum resultado"
+             class="d-block mx-auto home-no-results-img">
+        <p class="fw-bold mt-3 mb-0">
+            <?= (isset($busca) && $busca !== '') ? 'Nenhum produto encontrado para esta busca.' : 'Nenhum produto cadastrado.' ?>
+        </p>
+    </div>
+<?php else: ?>
+        <table class="table table-hover bg-white shadow-sm rounded">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Referência</th>
+                    <th class="text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($produtos as $p): ?>
+                <tr>
+                    <td><?= $p['id'] ?></td>
+                    <td><?= htmlspecialchars($p['nome']) ?></td>
+                    <td><?= htmlspecialchars($p['referencia']) ?></td>
+                    <td class="text-center">
+                        <a href="admin.php?p=produtos/atualizar&id=<?= $p['id'] ?>" class="btn btn-sm btn-info text-white">
+                            <i data-feather="edit"></i>
+                        </a>
+                        
+                        <button type="button" 
+                                class="btn btn-sm btn-danger btn-excluir" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#modalExcluir"
+                                data-id="<?= $p['id'] ?>"
+                                data-nome="<?= htmlspecialchars($p['nome']) ?>"
+                                data-ref="<?= htmlspecialchars($p['referencia']) ?>">
+                            <i data-feather="trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+<?php endif; ?>
 
 <div class="modal fade" id="modalExcluir" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
