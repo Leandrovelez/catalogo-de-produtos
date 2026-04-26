@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `imagens` (
   CONSTRAINT `fk_produto` FOREIGN KEY (`produto_id`) REFERENCES `produtos` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Exportação de dados foi desmarcado.
+-- Copiando dados para a tabela catalogo_produtos.imagens: ~0 rows (aproximadamente)
 
 -- Copiando estrutura para tabela catalogo_produtos.produtos
 CREATE TABLE IF NOT EXISTS `produtos` (
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS `produtos` (
   UNIQUE KEY `referencia` (`referencia`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Exportação de dados foi desmarcado.
+-- Copiando dados para a tabela catalogo_produtos.produtos: ~0 rows (aproximadamente)
 
 -- Copiando estrutura para tabela catalogo_produtos.usuarios
 CREATE TABLE IF NOT EXISTS `usuarios` (
@@ -55,7 +55,10 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Exportação de dados foi desmarcado.
+-- Copiando dados para a tabela catalogo_produtos.usuarios: ~2 rows (aproximadamente)
+REPLACE INTO `usuarios` (`id`, `nome`, `email`, `senha`, `nivel`) VALUES
+	(1, 'Administrador', 'admin@teste.com', '$2y$12$pOIlVwwcvx/Qp8jzQl4/u.BKk2m6g7GvkNHvhdls0UD4i5wzTmXAS', 'admin'),
+	(2, 'Usuario Comum', 'user@teste.com', '$2y$12$pOIlVwwcvx/Qp8jzQl4/u.BKk2m6g7GvkNHvhdls0UD4i5wzTmXAS', 'comum');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
