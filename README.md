@@ -89,3 +89,7 @@ Abra no navegador:
 
 - O projeto usa upload de imagens em `uploads/`.
 - Garanta permissao de escrita nessa pasta no seu ambiente local.
+- Usuarios ja cadastrados no banco:
+  - Usuario comum: `user@teste.com`
+  - Admin: `admin@teste.com`
+  - Senha para ambos: `teste123`
